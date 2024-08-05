@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+// import java.util.stream.Collectors;
 
 @Service
 public class ApplicationDetailsService {
@@ -20,7 +21,7 @@ public class ApplicationDetailsService {
     @Autowired
     private StudentDetailsRepository studentDetailsRepository;
 
-    public List<ApplicationDetails> getAllApplications() {
+    public List<ApplicationDetails> getAllAppalication() {
         return repository.findAll();
     }
 

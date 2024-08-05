@@ -108,6 +108,11 @@ public class CompanyController {
     // return ResponseEntity.ok(savedCompany);
     // }
 
+    @GetMapping("/count")
+    public int getComanCount() {
+        return companyService.getAllCompanies().size();
+    }
+
     @GetMapping
     public ResponseEntity<List<CompanyDetalis>> getAllCompanies() {
         List<CompanyDetalis> companies = companyService.getAllCompanies();

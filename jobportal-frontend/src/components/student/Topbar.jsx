@@ -23,7 +23,7 @@ export const Topbar = () => {
     setAnchorEl(null);
   };
   const { user } = useContext(UserContext);
-  // console.log("This is user", user.username);
+
   return (
     <>
       <header className="d-flex align-items-center w-100">
@@ -67,8 +67,12 @@ export const Topbar = () => {
                   </div>
 
                   <div className="userInfo">
-                    <h4>{user.username ? "Admin" : "Guest User"}</h4>
-                    <p className="mb-0">{user?.username || "@guest"}</p>
+                    <h4>
+                      {user
+                        ? `${user.firstName} ${user.lastName}`
+                        : "Guest User"}
+                    </h4>
+                    <p className="mb-0">{user?.email || "@guest"}</p>
                   </div>
                 </Button>
 

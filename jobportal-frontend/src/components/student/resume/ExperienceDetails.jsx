@@ -25,8 +25,9 @@ import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 
-export const ExperienceDetails = ({ nextStep, prevStep }) => {
-  const [experience, setExperience] = useState([]);
+export const ExperienceDetails = ({formData, onChange, nextStep, prevStep }) => {
+  const { experience } = formData;
+
   const [open, setOpen] = useState(false);
   const [newExperience, setNewExperience] = useState({
     position: "",
@@ -43,7 +44,9 @@ export const ExperienceDetails = ({ nextStep, prevStep }) => {
   };
 
   const addExperience = () => {
-    setExperience([...experience, newExperience]);
+    onChange({
+      experience: [...experience, newExperience],
+    });
     setNewExperience({
       position: "",
       company: "",
@@ -54,9 +57,11 @@ export const ExperienceDetails = ({ nextStep, prevStep }) => {
   };
 
   const removeExperience = (index) => {
-    const newExperienceList = experience.slice();
-    newExperienceList.splice(index, 1);
-    setExperience(newExperienceList);
+    const updatedExperience = experience.slice();
+    updatedExperience.splice(index, 1);
+    onChange({
+      experience: updatedExperience,
+    });
   };
 
   const openDialog = () => {
@@ -66,7 +71,6 @@ export const ExperienceDetails = ({ nextStep, prevStep }) => {
   const closeDialog = () => {
     setOpen(false);
   };
-
   return (
     <Box>
       <Card sx={{ mt: 3 }} variant="outlined">

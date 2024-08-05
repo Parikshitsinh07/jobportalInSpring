@@ -1,86 +1,170 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Typography,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  CircularProgress,
+} from "@mui/material";
+import { Visibility, Delete } from "@mui/icons-material";
 
-const StudentTable = ({ students, onDelete, onViewProfile }) => {
-  // Function to handle delete button click
-  const handleDelete = (id) => {
-    onDelete(id);
+export const StudentView = () => {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/students");
+        setStudents(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const handleDetailsClick = (student) => {
+    setSelectedStudent(student);
+    setDetailsDialogOpen(true);
   };
 
-  // Function to handle view profile button click
-  const handleViewProfile = (id) => {
-    onViewProfile(id);
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/students/${id}`);
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student.studentId !== id)
+      );
+    } catch (err) {
+      setError(err.message);
+    }
   };
+
+  const handleDetailsDialogClose = () => {
+    setDetailsDialogOpen(false);
+    setSelectedStudent(null);
+  };
+
+  if (loading) return <CircularProgress />;
+  if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
-    <div className="container mt-4 " style={{ width: "139%" }}>
-      <h2 className="my-4">Student List</h2>
-      <div className="table-responsive">
-        <table className="table table-striped table-hover">
-          <thead className="thead-light">
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Student List
+      </Typography>
+      <TableContainer style={{ width: "76vw" }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Student ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {students.map((student) => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
-                <td>
-                  <button
-                    className="btn btn-primary mr-2"
-                    onClick={() => handleViewProfile(student.id)}
+              <TableRow key={student.studentId}>
+                <TableCell>{student.studentId}</TableCell>
+                <TableCell>{`${student.firstName} ${student.lastName}`}</TableCell>
+                <TableCell>{student.email}</TableCell>
+                <TableCell>{student.city}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Visibility />}
+                    onClick={() => handleDetailsClick(student)}
                   >
                     View Profile
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(student.id)}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Delete />}
+                    onClick={() => handleDelete(student.studentId)}
+                    style={{ marginLeft: "10px" }}
                   >
                     Delete
-                  </button>
-                </td>
-              </tr>
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Dialog
+        open={detailsDialogOpen}
+        onClose={handleDetailsDialogClose}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Student Details</DialogTitle>
+        <DialogContent>
+          {selectedStudent && (
+            <>
+              <Typography variant="h6">
+                Name:{" "}
+                {`${selectedStudent.firstName} ${selectedStudent.lastName}`}
+              </Typography>
+              <Typography variant="body1">
+                Email: {selectedStudent.email}
+              </Typography>
+              <Typography variant="body1">
+                Gender: {selectedStudent.gender}
+              </Typography>
+              <Typography variant="body1">
+                Mobile: {selectedStudent.mobileNumber}
+              </Typography>
+              <Typography variant="body1">
+                Temporary Address: {selectedStudent.addressTemporary}
+              </Typography>
+              <Typography variant="body1">
+                Permanent Address: {selectedStudent.addressPermanent}
+              </Typography>
+              <Typography variant="body1">
+                City: {selectedStudent.city}
+              </Typography>
+              <Typography variant="body1">
+                Course: {selectedStudent.course}
+              </Typography>
+              <Typography variant="body1">
+                Profile Picture: {selectedStudent.profilePicture}
+              </Typography>
+              <Typography variant="body1">
+                Created At: {selectedStudent.onCreate}
+              </Typography>
+              <Typography variant="body1">
+                Updated At: {selectedStudent.onUpdate}
+              </Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDetailsDialogClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
   );
 };
 
-// Demo data for students
-const studentsData = [
-  { id: 1, name: "John Doe", email: "john.doe@example.com" },
-  { id: 2, name: "Jane Smith", email: "jane.smith@example.com" },
-  { id: 3, name: "Michael Johnson", email: "michael.johnson@example.com" },
-  { id: 4, name: "Emily Davis", email: "emily.davis@example.com" },
-];
-
-export const StudentsView = () => {
-  const [students, setStudents] = useState(studentsData);
-
-  // Function to delete a student
-  const handleDelete = (id) => {
-    const updatedStudents = students.filter((student) => student.id !== id);
-    setStudents(updatedStudents);
-  };
-
-  // Function to view a student's profile (placeholder action)
-  const handleViewProfile = (id) => {
-    console.log(`View profile for student with ID ${id}`);
-    // Replace with actual logic to view profile
-  };
-
-  return (
-    <div>
-      <StudentTable
-        students={students}
-        onDelete={handleDelete}
-        onViewProfile={handleViewProfile}
-      />
-    </div>
-  );
-};
+//  default StudentView;

@@ -26,13 +26,15 @@ import {
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 
-export const ProjectDetails = ({ prevStep }) => {
-  const [projects, setProjects] = useState([]);
+export const ProjectDetails = ({ formData,onChange,prevStep,nextStep}) => {
+  const { projectDetails } = formData;
+
   const [open, setOpen] = useState(false);
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
     link: "",
+    
   });
 
   const handleNewProjectChange = (event) => {
@@ -43,15 +45,19 @@ export const ProjectDetails = ({ prevStep }) => {
   };
 
   const addProject = () => {
-    setProjects([...projects, newProject]);
+    onChange({
+      projectDetails: [...projectDetails, newProject],
+    });
     setNewProject({ title: "", description: "", link: "" });
     setOpen(false);
   };
 
   const removeProject = (index) => {
-    const newProjectList = projects.slice();
+    const newProjectList = projectDetails.slice();
     newProjectList.splice(index, 1);
-    setProjects(newProjectList);
+    onChange({
+      projectDetails: newProjectList,
+    });
   };
 
   const openDialog = () => {
@@ -123,8 +129,8 @@ export const ProjectDetails = ({ prevStep }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {projects.length > 0 ? (
-                  projects.map((project, index) => (
+              {projectDetails.length > 0 ? (
+                  projectDetails.map((project, index) => (
                     <TableRow key={index}>
                       <TableCell>{project.title}</TableCell>
                       <TableCell>{project.description}</TableCell>
@@ -155,7 +161,7 @@ export const ProjectDetails = ({ prevStep }) => {
             </IconButton>
             <Button
               variant="contained"
-              onClick={() => alert("Generate Resume")}
+              onClick={nextStep}
             >
               Generate Resume
             </Button>

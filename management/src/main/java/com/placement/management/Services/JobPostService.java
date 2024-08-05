@@ -48,9 +48,11 @@ public class JobPostService {
         jobPostRepository.deleteById(id);
     }
 
+    // @Scheduled(cron = "*/5 * * * * ?") // Runs every 5 seconds
     @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight
     public void deactivateExpiredJobPosts() {
         LocalDate today = LocalDate.now();
+        System.out.println("deactivateExpiredJobPosts method called at " + LocalDateTime.now());
         List<JobPost> expiredPosts = jobPostRepository.findByLastApplicationDateBefore(today);
         for (JobPost jobPost : expiredPosts) {
             jobPost.setActive(false); // Deactivate expired job posts

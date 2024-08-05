@@ -1,47 +1,80 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react"; // Added useContext import
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import axios from "axios";
+import "../../css/SDashboard.css"; // Import custom CSS file
+import { UserContext } from "../../context/UserContext";
+
 export const SDashboard = () => {
+  const [appliedJobsCount, setAppliedJobsCount] = useState(0);
+  const [availableJobsCount, setAvailableJobsCount] = useState(0);
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchJobData = async () => {
+      try {
+        const appliedJobsResponse = await axios.post(
+          `http://localhost:8080/api/applications/CountOfApplication?studentId=${user.studentId}`
+        );
+        const availableJobsResponse = await axios.get(
+          "http://localhost:8080/admin/dashboard/manage-jobPost/count"
+        );
+
+        setAppliedJobsCount(appliedJobsResponse.data);
+        setAvailableJobsCount(availableJobsResponse.data);
+      } catch (error) {
+        console.error("Error fetching job data:", error);
+      }
+    };
+
+    fetchJobData();
+  }, [user.studentId]);
+
   return (
     <>
       <section className="content">
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-4 col-sm-6">
-              {/*Small Box */}
+              {/* Small Box for Applied Jobs */}
               <div className="small-box bg-secondary">
-                <div class="inner">
-                  <h3>2</h3>
-                  <p>Applied Job</p>  
+                <div className="inner">
+                  <h3>{appliedJobsCount}</h3>
+                  <p>Applied Jobs</p>
                 </div>
-                <div class="icon">
-                  <BadgeOutlinedIcon/>
+                <div className="icon">
+                  <BadgeOutlinedIcon />
                 </div>
                 <a
                   href="/student/dashboard/appliedjob/view"
-                  class="small-box-footer"
+                  className="small-box-footer"
                 >
-                 View<KeyboardArrowRightIcon/>
+                  View <KeyboardArrowRightIcon />
                 </a>
               </div>
-            </div> 
-            {/*end column */}
-            <div class="col-lg-4 col-sm-6">
-               
-                <div class="small-box bg-dark">
-                    <div class="inner">
-                        <h3>5</h3>
+            </div>
+            {/* End Column */}
 
-                        <p>Available Job</p>
-                    </div>
-                    <div class="icon">
-                     <WorkOutlineOutlinedIcon/>
-                    </div>
-                    <a href="/student/dashboard/findjob" class="small-box-footer">View<KeyboardArrowRightIcon/></a>
+            <div className="col-lg-4 col-sm-6">
+              {/* Small Box for Available Jobs */}
+              <div className="small-box bg-dark">
+                <div className="inner">
+                  <h3>{availableJobsCount}</h3>
+                  <p>Available Jobs</p>
                 </div>
+                <div className="icon">
+                  <WorkOutlineOutlinedIcon />
+                </div>
+                <a
+                  href="/student/dashboard/findjob"
+                  className="small-box-footer"
+                >
+                  View <KeyboardArrowRightIcon />
+                </a>
               </div>
-
+            </div>
+            {/* End Column */}
           </div>
         </div>
       </section>

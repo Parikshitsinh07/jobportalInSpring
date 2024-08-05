@@ -21,6 +21,8 @@ import com.placement.management.Services.StudentDetailsService;
 import com.placement.management.helper.FileUploadHelper;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @CrossOrigin("*")
 @RestController
@@ -44,6 +46,11 @@ public class JobPostController {
     @GetMapping
     public ResponseEntity<List<JobPost>> getAllJobPost() {
         return new ResponseEntity<>(jobPostService.getAllJobPost(), HttpStatus.OK);
+    }
+
+    @GetMapping("/count")
+    public int getJobPostCount() {
+        return jobPostService.getAllJobPost().size();
     }
 
     @GetMapping("/{id}")

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import logo from "../../assets/images/gvp_logo.jpg";
 import { AdminLoginForm } from "../../Services/Admin";
 import { Snackbar, Alert } from "@mui/material";
 import { CustomLoader } from "../CustomLoader";
-// import "./AdminLogin.css"; // Assuming you have a CSS file for styling
 import "../../css/AdminLogin.css";
+import { UserContext } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
+
 export const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +15,12 @@ export const AdminLogin = () => {
   const [open, setOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+
+  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
+
+  const { setUser } = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -29,9 +38,13 @@ export const AdminLogin = () => {
         setAlertMessage("Login successful");
         setAlertSeverity("success");
         setOpen(true);
-        setTimeout(() => {
-          window.location.href = "/admin/dashboard";
-        }, 1000);
+        login();
+        setUser(response.data); // Set the user data in context
+        navigate("/admin/dashboard");
+        // localStorage.setItem("user", JSON.stringify(response.data)); // Optional: save user data to localStorage
+        // setTimeout(() => {
+        //   window.location.href = "/admin/dashboard";
+        // }, 1000);
       } else {
         setAlertMessage("Login failed");
         setAlertSeverity("error");

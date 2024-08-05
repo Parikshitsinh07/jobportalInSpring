@@ -46,7 +46,7 @@ public class ApplicationDetailsController {
 
     @GetMapping
     public List<ApplicationDetails> getAllApplications() {
-        return service.getAllApplications();
+        return service.getAllAppalication();
     }
 
     @GetMapping("/{id}")
@@ -114,6 +114,11 @@ public class ApplicationDetailsController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/CountOfApplication")
+    public int StudentApplicationCount(@RequestParam Integer studentId) {
+        return service.findByStudentId(studentId).size();
     }
 
     // Example Spring Boot endpoint in your controller

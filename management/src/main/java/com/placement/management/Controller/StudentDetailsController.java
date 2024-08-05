@@ -40,6 +40,11 @@ public class StudentDetailsController {
         return service.getAllStudents();
     }
 
+    @GetMapping("/count")
+    public int getStudentsCount() {
+        return service.getAllStudents().size();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<StudentDetails> getStudentById(@PathVariable int id) {
         Optional<StudentDetails> student = service.getStudentById(id);

@@ -26,9 +26,9 @@ import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import { useState } from "react";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
-export const EducationDetails = ({ nextStep, prevStep }) => {
-  const [education, setEducation] = useState([]);
+export const EducationDetails = ({formData, onChange, nextStep, prevStep }) => {
   const [open, setOpen] = useState(false);
+  const { education } = formData;
   const [newEducation, setNewEducation] = useState({
     degree: "",
     institution: "",
@@ -36,23 +36,28 @@ export const EducationDetails = ({ nextStep, prevStep }) => {
     percentage: "",
   });
 
+  
   const handleNewEducationChange = (event) => {
+    const { name, value } = event.target;
     setNewEducation({
       ...newEducation,
-      [event.target.name]: event.target.value,
+      [name]: value,
     });
   };
 
   const addEducation = () => {
-    setEducation([...education, newEducation]);
+    onChange({
+      education: [...education, newEducation],
+    });
     setNewEducation({ degree: "", institution: "", year: "", percentage: "" });
     setOpen(false);
   };
 
   const removeEducation = (index) => {
-    const newEducationList = education.slice();
-    newEducationList.splice(index, 1);
-    setEducation(newEducationList);
+    const updatedEducation = education.filter((_, eduIndex) => eduIndex !== index);
+    onChange({
+      education: updatedEducation,
+    });
   };
 
   const openDialog = () => {

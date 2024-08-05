@@ -6,6 +6,8 @@ import { UserContext } from "../../context/UserContext";
 import { Snackbar, Alert } from "@mui/material";
 import { CustomLoader } from "../CustomLoader";
 
+import { AuthContext } from "./AuthContext";
+
 export const StudentLogin = () => {
   const [course, setCourse] = useState("");
   const [email, setEmail] = useState("");
@@ -17,6 +19,8 @@ export const StudentLogin = () => {
   const [open, setOpen] = useState(false); // State for alert
   const [alertSeverity, setAlertSeverity] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -37,6 +41,7 @@ export const StudentLogin = () => {
         setAlertMessage("Login successful");
         setAlertSeverity("success");
         setOpen(true);
+        login();
         setUser(response.data);
         // Redirect to dashboard
         navigate("/student/dashboard");

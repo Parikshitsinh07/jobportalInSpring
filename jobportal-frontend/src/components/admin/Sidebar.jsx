@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../css/Sidebar.css";
 import Button from "@mui/material/Button";
 import { RxDashboard } from "react-icons/rx";
@@ -13,16 +13,23 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import InsertCommentOutlinedIcon from "@mui/icons-material/InsertCommentOutlined";
 import Logout from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../context/UserContext"; // Ensure the correct import path
+import { AuthContext } from "../auth/AuthContext";
 
 export const Sidebar = () => {
+  const { setUser } = useContext(UserContext);
+  const [activeTab, setActiveTab] = useState(null);
+  const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
+      setUser(null);
+      logout();
+      localStorage.removeItem("user");
       window.location.href = "/";
     }
   };
 
-  const [activeTab, setActiveTab] = useState(null);
-  const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
   const isOpenSubmenu = (index) => {
     setActiveTab(index);
     setIsToggleSubmenu(!isToggleSubmenu);
@@ -181,15 +188,17 @@ export const Sidebar = () => {
                 </Link>
               </li>
               <li>
-                <Button
-                  className={`w-100 ${activeTab === 7 ? "active" : ""}`}
-                  onClick={() => isOpenSubmenu(7)}
-                >
-                  <span className="icon">
-                    <BadgeOutlinedIcon />
-                  </span>
-                  View Job Application
-                </Button>
+                <Link to="/admin/dashboard/ViewApplication">
+                  <Button
+                    className={`w-100 ${activeTab === 7 ? "active" : ""}`}
+                    onClick={() => isOpenSubmenu(7)}
+                  >
+                    <span className="icon">
+                      <BadgeOutlinedIcon />
+                    </span>
+                    View Job Application
+                  </Button>
+                </Link>
               </li>
               <li>
                 <Button

@@ -25,8 +25,9 @@ import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 
-export const Hobbies = ({ nextStep, prevStep }) => {
-  const [hobbies, setHobbies] = useState([]);
+export const Hobbies = ({ formData,onChange,nextStep, prevStep }) => {
+  const { hobbies } = formData;
+  
   const [open, setOpen] = useState(false);
   const [newHobby, setNewHobby] = useState("");
 
@@ -35,15 +36,19 @@ export const Hobbies = ({ nextStep, prevStep }) => {
   };
 
   const addHobby = () => {
-    setHobbies([...hobbies, newHobby]);
+    onChange({
+      hobbies: [...hobbies, newHobby],
+    });
     setNewHobby("");
     setOpen(false);
   };
 
   const removeHobby = (index) => {
-    const newHobbyList = hobbies.slice();
-    newHobbyList.splice(index, 1);
-    setHobbies(newHobbyList);
+    const updatedHobbies = hobbies.slice();
+    updatedHobbies.splice(index, 1);
+    onChange({
+      hobbies: updatedHobbies,
+    });
   };
 
   const openDialog = () => {
@@ -53,7 +58,6 @@ export const Hobbies = ({ nextStep, prevStep }) => {
   const closeDialog = () => {
     setOpen(false);
   };
-
   return (
     <Box>
       <Card sx={{ mt: 3 }} variant="outlined">

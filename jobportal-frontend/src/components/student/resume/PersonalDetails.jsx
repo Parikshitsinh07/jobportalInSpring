@@ -27,12 +27,16 @@ import { useState } from "react";
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 
-export const PersonalDetails = ({ nextStep }) => {
-  const [languages, setLanguages] = useState([]);
+export const PersonalDetails = ({ nextStep ,formData, onChange}) => {
+  const { fullName, email, objective, mobile, dob, religion, nationality, maritalStatus, address, languages, photoURL } = formData;
+
   const [language, setLanguage] = useState("");
   const [open, setOpen] = useState(false);
-  const [photo, setPhoto] = useState(null);
-  const [photoURL, setPhotoURL] = useState("");
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    onChange({ [name]: value });
+  };
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
@@ -48,7 +52,7 @@ export const PersonalDetails = ({ nextStep }) => {
   };
 
   const addLanguage = () => {
-    setLanguages([...languages, language]);
+    onChange({ languages: [...languages, language] });
     setLanguage("");
     handleClose();
   };
@@ -56,15 +60,17 @@ export const PersonalDetails = ({ nextStep }) => {
   const removeLanguage = (index) => {
     const newLanguages = languages.slice();
     newLanguages.splice(index, 1);
-    setLanguages(newLanguages);
+    onChange({ languages: newLanguages });
   };
+
   const handlePhotoUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setPhoto(file);
-      setPhotoURL(URL.createObjectURL(file));
+      onChange({ photoURL: URL.createObjectURL(file) });
     }
   };
+
+  
 
   return (
     <>
@@ -127,10 +133,14 @@ export const PersonalDetails = ({ nextStep }) => {
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Full Name" name="fullName" />
+                <TextField fullWidth label="Full Name" name="fullName"
+                value={fullName}
+                onChange={handleInputChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Email" name="email" />
+                <TextField fullWidth label="Email" name="email"
+                value={email}
+                onChange={handleInputChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -140,10 +150,14 @@ export const PersonalDetails = ({ nextStep }) => {
                   rows={4}
                   label="Objective"
                   name="objective"
+                  value={objective}
+                  onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Mobile" name="mobile" />
+                <TextField fullWidth label="Mobile" name="mobile"
+                value={mobile}
+                onChange={handleInputChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -153,14 +167,21 @@ export const PersonalDetails = ({ nextStep }) => {
                   name="dob"
                   InputLabelProps={{
                     shrink: true,
+
                   }}
+                  value={formData.dob}
+                onChange={handleInputChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Religion" name="religion" />
+                <TextField fullWidth label="Religion" name="religion"
+                value={religion}
+                onChange={handleInputChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Nationality" name="nationality" />
+                <TextField fullWidth label="Nationality" name="nationality"
+                value={nationality}
+                onChange={handleInputChange} />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -171,6 +192,8 @@ export const PersonalDetails = ({ nextStep }) => {
                   SelectProps={{
                     native: true,
                   }}
+                  value={maritalStatus}
+                onChange={handleInputChange}
                 >
                   <option value="single">Single</option>
                   <option value="married">Married</option>
@@ -185,6 +208,8 @@ export const PersonalDetails = ({ nextStep }) => {
                   rows={4}
                   label="Address"
                   name="address"
+                  value={address}
+                onChange={handleInputChange}
                 />
               </Grid>
             </Grid>

@@ -25,8 +25,9 @@ import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 
-export const Skills = ({ nextStep, prevStep }) => {
-  const [skills, setSkills] = useState([]);
+export const Skills = ({formData,onChange, nextStep, prevStep }) => {
+  const { skills } = formData;
+  
   const [open, setOpen] = useState(false);
   const [newSkill, setNewSkill] = useState("");
 
@@ -35,15 +36,19 @@ export const Skills = ({ nextStep, prevStep }) => {
   };
 
   const addSkill = () => {
-    setSkills([...skills, newSkill]);
+    onChange({
+      skills: [...skills, newSkill],
+    });
     setNewSkill("");
     setOpen(false);
   };
 
   const removeSkill = (index) => {
-    const newSkillList = skills.slice();
-    newSkillList.splice(index, 1);
-    setSkills(newSkillList);
+    const updatedSkills = skills.slice();
+    updatedSkills.splice(index, 1);
+    onChange({
+      skills: updatedSkills,
+    });
   };
 
   const openDialog = () => {

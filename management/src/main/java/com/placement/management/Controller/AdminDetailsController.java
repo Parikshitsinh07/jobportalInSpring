@@ -29,7 +29,7 @@ public class AdminDetailsController {
                 loginRequest.getUsername(),
                 loginRequest.getPassword());
         if (admin.isPresent()) {
-            return ResponseEntity.ok(admin.get().getUsername());
+            return ResponseEntity.ok().body(admin);
         } else {
             return ResponseEntity.status(401).body("Unauthorized"); //
         }
